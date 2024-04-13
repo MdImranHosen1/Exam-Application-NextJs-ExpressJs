@@ -1,86 +1,82 @@
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 
-const RecorderAndScreenshotTaker = () => {
-  const [recording, setRecording] = useState(false);
+const CheckPackage = () => {
+  const [isRecording, setIsRecording] = useState(false);
   const [audioChunks, setAudioChunks] = useState([]);
-  const [screenshot, setScreenshot] = useState(null);
+  const [audioURLs, setAudioURLs] = useState([]);
+  const mediaRecorder = useRef(null);
 
   const startRecording = () => {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
-        const mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.ondataavailable = (e) => {
+        mediaRecorder.current = new MediaRecorder(stream);
+        mediaRecorder.current.ondataavailable = (e) => {
           setAudioChunks((prev) => [...prev, e.data]);
         };
-        mediaRecorder.start();
-        setRecording(true);
+        mediaRecorder.current.start();
+        setIsRecording(true);
+        // Reset audio URLs list when recording starts
+        setAudioURLs([]);
       })
-      .catch((err) => console.log(err));
+      .catch((error) => console.error("Error accessing microphone:", error));
   };
 
   const stopRecording = () => {
-    setRecording(false);
-  };
-
-  const takeScreenshot = async () => {
-    const stream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-    });
-    const track = stream.getTracks()[0];
-    const imageCapture = new ImageCapture(track);
-
-    const blob = await imageCapture.takePhoto();
-    const url = URL.createObjectURL(blob);
-    setScreenshot(url);
-
-    track.stop();
-  };
-
-  const sendToDatabase = async () => {
-    const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
-    const formData = new FormData();
-    formData.append("audio", audioBlob, "recording.wav");
-    formData.append("screenshot", screenshot);
-
-    try {
-      const response = await fetch("/api/saveResult", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error("Error saving result:", error);
+    if (mediaRecorder.current && mediaRecorder.current.state !== "inactive") {
+      mediaRecorder.current.stop();
+      setIsRecording(false);
     }
+  };
+
+  const sendRecordings = () => {
+    // Send audioChunks to backend
+    const formData = new FormData();
+    audioChunks.forEach((chunk) => {
+      formData.append("audio", chunk);
+    });
+
+    fetch("/api/upload-audio", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => console.log("Audio uploaded:", data))
+      .catch((error) => console.error("Error uploading audio:", error));
+  };
+
+  const playRecording = (index) => {
+    const blob = new Blob([audioChunks[index]], { type: "audio/wav" });
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    audio.play();
   };
 
   return (
     <div>
-      <button onClick={startRecording} disabled={recording}>
-        Start Recording
-      </button>
-      <button onClick={stopRecording} disabled={!recording}>
-        Stop Recording
-      </button>
-      <button onClick={takeScreenshot}>Take Screenshot</button>
-      {screenshot && <img src={screenshot} alt="Screenshot" />}
-      {audioChunks.length > 0 && (
-        <div>
-          <audio controls>
-            <source
+      <div>
+        <button onClick={isRecording ? stopRecording : startRecording}>
+          {isRecording ? "Stop Recording" : "Start Recording"}
+        </button>
+        <button onClick={sendRecordings} disabled={!audioChunks.length}>
+          Send Recordings
+        </button>
+      </div>
+      <div>
+        {audioChunks.map((chunk, index) => (
+          <div key={index}>
+            <audio
+              controls
               src={URL.createObjectURL(
-                new Blob(audioChunks, { type: "audio/wav" })
+                new Blob([chunk], { type: "audio/wav" })
               )}
-              type="audio/wav"
-            />
-            Your browser does not support the audio element.
-          </audio>
-        </div>
-      )}
-      <button onClick={sendToDatabase}>Send to Database</button>
+            ></audio>
+           
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
-export default RecorderAndScreenshotTaker;
+export default CheckPackage;
