@@ -29,7 +29,7 @@ const Sidebar = () => {
 
   return (
     viewSidebar && (
-      <div className=" w-[300px] bg-gray-200 h-screen border border-green-400 flex flex-col justify-between pb-6 pt-6">
+      <div className="fixed w-[300px] bg-gray-200 h-screen border border-green-400 flex flex-col justify-between pb-6 pt-6">
         <div className="flex flex-col w-full">
           {navItem.map((value, index) => (
             <div

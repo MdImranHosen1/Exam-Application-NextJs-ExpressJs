@@ -8,12 +8,14 @@ import "ace-builds/src-noconflict/theme-monokai";
 import WebcamImage from "@/components/WebcamImage";
 import parse from "html-react-parser";
 import html2canvas from "html2canvas";
-import CheckPackage from "@/components/CheckPackage";
+
 import LoadingPage from "@/components/LoadingPage";
+import { useRouter } from "next/navigation";
 
 const AnswerReview = ["Bad", "Avarage", "Good", "Best"];
 
 const ExamViva = () => {
+  const { push } = useRouter();
   const [questions, setQuestions] = useState(null);
   const [index, setIndex] = useState(0);
   const [code, setCode] = useState("// Your initial code here");
@@ -148,16 +150,48 @@ const ExamViva = () => {
       .padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  const handleFinishExam = () => {
+  const handleFinishExam = async () => {
+    moveNextQuestion();
+    stopRecording();
+
+    // Convert audio chunks from Blob to Buffer
+    const buffers = await Promise.all(
+      audioChunks.map(async (chunk) => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const buffer = Buffer.from(reader.result);
+            resolve(buffer);
+          };
+          reader.readAsArrayBuffer(chunk);
+        });
+      })
+    );
+
     const examData = {
-      questions: questions,
-      codes: codes,
-      reviewSolutions: reviewSolutions,
+      questions: questions.map((question) => question._id),
+      codes,
+      reviewSolutions,
       answersTaken: questionTimes,
-      totalTime: totalTime,
+      totalTime,
       screenshot: capturedImages,
-      records:audioChunks,
+      records: buffers, // Use the converted Buffers here
     };
+
+    console.log("ExamDATA ", examData);
+
+    // function calculateSizeInBytes(data) {
+    //   // Convert the data to JSON string
+    //   const jsonString = JSON.stringify(data);
+
+    //   // Calculate the size of the JSON string in bytes
+    //   const bytes = new Blob([jsonString]).size;
+
+    //   return bytes;
+    // }
+
+    // const sizeInBytes = calculateSizeInBytes(examData);
+    // console.log("Size of ExamData:", sizeInBytes, "bytes");
 
     axios
       .post(BASE_URLS.backend + "/exam/viva/result", examData)
@@ -167,6 +201,8 @@ const ExamViva = () => {
       .catch((error) => {
         console.error("Error sending data to backend:", error);
       });
+
+    push("/exam/viva/result");
   };
 
   if (questions === null) {
@@ -255,7 +291,7 @@ const ExamViva = () => {
           </div>
           <div className="mt-7 flex-grow flex flex-col">
             <WebcamImage />
-            {audioChunks.map((chunk, index) => (
+            {/* {audioChunks.map((chunk, index) => (
               <div key={index}>
                 <audio
                   controls
@@ -265,7 +301,7 @@ const ExamViva = () => {
                 ></audio>
                 <button onClick={() => playRecording(index)}>Play</button>
               </div>
-            ))}
+            ))} */}
           </div>
         </div>
       </div>

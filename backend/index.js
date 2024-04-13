@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
+app.use(bodyParser.json({ limit: "10mb" }));
 
 // Routes
 const questionsVivaRoutes = require("./routes/questionsViva.routes");
