@@ -8,8 +8,8 @@ import "ace-builds/src-noconflict/theme-monokai";
 import WebcamImage from "@/components/WebcamImage";
 import parse from "html-react-parser";
 import html2canvas from "html2canvas";
-import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 import CheckPackage from "@/components/CheckPackage";
+import { useRecorder } from "react-recorder-voice";
 
 const AnswerReview = ["Bad", "Avarage", "Good", "Best"];
 
@@ -17,21 +17,25 @@ const ExamViva = () => {
   const [questions, setQuestions] = useState(null);
   const [index, setIndex] = useState(0);
   const [code, setCode] = React.useState("// Your initial code here");
+  const [codes, setCodes] = React.useState([]);
   const [totalTime, setTotalTime] = useState(0);
   const [questionTime, setQuestionTime] = useState(0);
+  const [questionTimes, setQuestionTimes] = useState([]);
   const [examFinished, setExamFinished] = useState(0);
   const [capturedImages, setCapturedImages] = useState([]);
-  const [recordedBlobs, setRecordedBlobs] = useState([]);
-  const [reviewSolution, setReviewSolution] = useState("");
-  const [examData, setExamData] = useState({
-    questionId: "",
-    code: "",
-    reviewSolution: "",
-    timeTaken: 0,
-    totalTimeTaken: 0,
-    records: [],
-    capturedImages: [],
-  });
+  const [reviewSolution, setReviewSolution] = useState("Avarage");
+  const [reviewSolutions, setReviewSolutions] = useState([]);
+  const {
+    audioURL,
+    audioData,
+    timer,
+    recordingStatus,
+    cancelRecording,
+    saveRecordedAudio,
+    startRecording,
+  } = useRecorder();
+  const [recordings, setRecordings] = useState([]);
+  const [audioDatas, setAudioDatas] = useState([]);
 
   const onChange = (newCode) => {
     setCode(newCode);
@@ -47,17 +51,6 @@ const ExamViva = () => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
   // Screensort end
-
-  // Audio Recorder
-  const recorderControls = useAudioRecorder();
-  const addAudioElement = (blob) => {
-    setRecordedBlobs((prevBlobs) => [...prevBlobs, blob]);
-    const url = URL.createObjectURL(blob);
-    const audio = document.createElement("audio");
-    audio.src = url;
-    audio.controls = true;
-  };
-  // Audio recorder end
 
   useEffect(() => {
     const getQuestionsList = async () => {
@@ -85,8 +78,7 @@ const ExamViva = () => {
       }
     };
     getQuestionsList();
-
-    recorderControls.startRecording();
+    startRecording();
 
     const timerId = setInterval(() => {
       setTotalTime((totalTime) => totalTime + 1);
@@ -94,7 +86,7 @@ const ExamViva = () => {
     }, 1000);
     const interval = setInterval(() => {
       CaptureImage();
-    }, getRandomInterval(50, 60) * 1000);
+    }, getRandomInterval(50, 60) * 100);
     return () => {
       clearInterval(interval);
       clearInterval(timerId);
@@ -106,23 +98,46 @@ const ExamViva = () => {
     setReviewSolution(value);
   };
 
-  const stopButtonRef = useRef(null);
+  // Start and stop record handle
   const startButtonRef = useRef(null);
-  const handleStopRecording = () => {
-    stopButtonRef.current.click();
-  };
   const handleStartRecording = () => {
     startButtonRef.current.click();
   };
+  // Next button click
   const moveNextQuestion = () => {
-    if (questions.length <= index + 1) {
-      setExamFinished(1);
-    } else {
+    if (examFinished === 0) {
+      setCodes((codes) => [...codes, code]);
+      setQuestionTimes((questionTimes) => [...questionTimes, questionTime]);
       setIndex(index + 1);
       setQuestionTime(0);
 
-      handleStopRecording();
-      setTimeout(handleStartRecording, 1000);
+      setReviewSolutions((reviewSolutions) => [
+        ...reviewSolutions,
+        reviewSolution,
+      ]);
+
+      console.log("if (audioURL) {", recordings);
+      if (audioURL) {
+        setRecordings([...recordings, audioURL]);
+      }
+      saveRecordedAudio();
+      setAudioDatas((audioDatas) => [...audioDatas, audioData]);
+      console.log("audioDatas,audioData",audioDatas,audioData)
+
+      setTimeout(handleStartRecording, 10);
+    }
+
+    if (questions.length <= index + 2 && examFinished === 0) {
+      setExamFinished(1);
+      if (audioURL) {
+        setRecordings([...recordings, audioURL]);
+      }
+      saveRecordedAudio();
+      setCodes((codes) => [...codes, code]);
+      setReviewSolutions((reviewSolutions) => [
+        ...reviewSolutions,
+        reviewSolution,
+      ]);
     }
   };
 
@@ -138,15 +153,16 @@ const ExamViva = () => {
 
   const handleFinishExam = () => {
     const examData = {
-      questionId: questions[index]._id,
-      code: code,
-      reviewSolution: reviewSolution,
-      timeTaken: questionTime,
+      questions: questions,
+      codes: codes,
+      reviewSolutions: reviewSolutions,
+      timeTaken: questionTimes,
       totalTimeTaken: totalTime,
-      records: recordedBlobs,
+      recordings: recordings,
+      audios: audioDatas,
       capturedImages: capturedImages,
     };
-    console.log("examData", examData);
+    // console.log("examData", examData);
     // Send data to backend URL
     axios
       .post(BASE_URLS.backend + "/exam/viva/submit", examData)
@@ -183,6 +199,8 @@ const ExamViva = () => {
     <div className="flex  flex-grow">
       <div className=" flex w-full flex-col ">
         <div className=" text-gray-800 flex bg-green-300 p-3 font-bold text-[26px] ml-3 mr-1 mt-3 mb-5 rounded-lg border  ">
+          {index + 1}
+          {". "}
           {parse(questions[index].question)}
         </div>
         <div className=" flex flex-col ml-3  flex-grow ">
@@ -257,7 +275,7 @@ const ExamViva = () => {
               Skip
             </div> */}
             <div
-              className="cursor-pointer   flex flex-grow h-10 bg-green-200 rounded-xl self-center items-center  justify-center border border-gray-400 font-bold text-gray-700 mb-2 ml-1"
+              className={` cursor-pointer   flex flex-grow h-10 bg-green-200 rounded-xl self-center items-center  justify-center border border-gray-400 font-bold text-gray-700 mb-2 ml-1 `}
               onClick={examFinished ? handleFinishExam : moveNextQuestion}
             >
               {examFinished ? "Submit" : "Next"}
@@ -265,31 +283,24 @@ const ExamViva = () => {
           </div>
           <div className=" mt-7 flex-grow flex flex-col">
             <WebcamImage />
-            <div className="flex  justify-center flex-grow mt-2">
-              <AudioRecorder
-                onRecordingComplete={(blob) => addAudioElement(blob)}
-                recorderControls={recorderControls}
-              />
-            </div>
+            <button ref={startButtonRef} onClick={startRecording}>
+              Start
+            </button>
+            {/* <button ref={startButtonRef}  onClick={handleSaveRecording}>Save</button> */}
 
-            <button
-              ref={stopButtonRef}
-              onClick={recorderControls.stopRecording}
-            ></button>
-            <button
-              ref={startButtonRef}
-              onClick={recorderControls.startRecording}
-            ></button>
-
-            {/* {recordedBlobs.map((blob, index) => (
+            {recordings.map((recording, index) => (
               <div key={index}>
-                <h2>Recorded Audio {index + 1}</h2>
-                <audio controls>
-                  <source src={URL.createObjectURL(blob)} />
-                </audio>
+                {console.log(
+                  "Recorde 1111",
+                  recording
+                )}
+                <audio controls src={recording}></audio>
               </div>
-            ))} */}
-            {/* <CheckPackage></CheckPackage> */}
+            ))}
+            <audio controls src={audioURL}></audio>
+            <h1>{timer}</h1>
+
+            {/* <CheckPackage /> */}
           </div>
         </div>
       </div>

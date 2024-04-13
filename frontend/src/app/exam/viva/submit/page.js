@@ -6,7 +6,6 @@ import "ace-builds/src-noconflict/theme-monokai";
 import WebcamImage from "@/components/WebcamImage";
 import parse from "html-react-parser";
 import html2canvas from "html2canvas";
-import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
 
 const VivaExamSubmit = () => {
   const [examData, setExamData] = useState(null);
@@ -24,36 +23,52 @@ const VivaExamSubmit = () => {
       <div className="font-bold h-20 justify-center text-[25px] bg-gray-200 flex items-center">
         Viva Exam Overview
       </div>
-      {examData && (
-        <div>
-          <div>
-            <h2>Question ID: {examData.questionId}</h2>
-            <p>Code: {examData.code}</p>
-            <p>Review Solution: {examData.reviewSolution}</p>
-            <p>Time Taken for Question: {examData.timeTaken} seconds</p>
-            <p>Total Time Taken: {examData.totalTimeTaken} seconds</p>
-          </div>
-          <div>
-            {/* Display images */}
-            {examData.capturedImages.map((image, index) => (
-              <img key={index} src={image} alt={`Image ${index}`} />
-            ))}
-          </div>
-          <div>
-            {/* Display audio recordings */}
-            {/* {examData.recordedBlobs.map((blob, index) => (
-              <div key={index}>
-                <h2>Recorded Audio {index + 1}</h2>
-                {blob && (
-                  <audio controls>
-                    <source src={URL.createObjectURL(blob)} />
-                  </audio>
-                )}
+      <div className="flex flex-grow border p-3 overflow-x-auto ">
+        {/* Display images */}
+        {examData &&
+          examData.capturedImages.map((image, index) => (
+            <img
+              key={index}
+              src={image}
+              alt={`Image ${index}`}
+              width="450px"
+              style={{ objectFit: "contain " }}
+            />
+          ))}
+      </div>
+      {examData &&
+        examData.questions.map((value, index) => {
+          return (
+            <div key={index} className="flex flex-grow m-2 p-2">
+              <div className="flex flex-col">
+                <div className="flex flex-grow">{parse(value.question)}</div>
+                <div className=" flex">
+                  <div>
+                    Review Solution: {parse(examData.reviewSolutions[index])}
+                  </div>
+                  <div>{examData.timeTaken[index]}</div>
+                  <div>{examData.totalTimeTaken}</div>
+                </div>
+                {/* <div>{examData.records[index]}Audio</div> */}
+                {/* {examData.recordings[index] && (
+                  <audio controls src={examData.recordings[index]}></audio>
+                )} */}
               </div>
-            ))} */}
+              <div>{parse(examData.codes[index])}</div>
+            </div>
+          );
+        })}
+
+      {examData &&
+        examData.recordings.map((recording, index) => (
+          <div key={index}>
+            {console.log(
+              "examData.recordings.map((recording, index) => (",
+              recording
+            )}
+            <audio controls src={recording}></audio>
           </div>
-        </div>
-      )}
+        ))}
     </div>
   );
 };
