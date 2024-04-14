@@ -19,7 +19,6 @@ router.post("/", async (req, res) => {
     } = req.body;
 
     // Create a new instance of the results model
-
     const result = new Result({
       questions,
       codes,
@@ -29,7 +28,6 @@ router.post("/", async (req, res) => {
       screenshot,
       records,
     });
-
     // Save the data to the database
     await result.save();
 
@@ -51,5 +49,15 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+// router.get("/", async (req, res) => {
+//   try {
+//     const examResults = await Result.find({}, '_id totalTime'); 
+//     res.status(200).json(examResults);
+//   } catch (error) {
+//     console.error("Error fetching exam results:", error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
 
 module.exports = router;

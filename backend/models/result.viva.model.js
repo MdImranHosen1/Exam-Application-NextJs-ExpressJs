@@ -9,7 +9,9 @@ const resultSchema = new mongoose.Schema({
   totalTime: Number,
   screenshot: [String],
   records: [Buffer],
-});
+},
+  { timestamps: true }
+);
 
 // Create examData model
 module.exports = mongoose.model("results", resultSchema);

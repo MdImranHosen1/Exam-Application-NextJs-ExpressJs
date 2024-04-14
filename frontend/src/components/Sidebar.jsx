@@ -42,6 +42,11 @@ const Sidebar = () => {
           ))}
         </div>
         <div className="flex flex-col self-center items-center">
+          <Link href="/exam/viva/result">
+            <div className="cursor-pointer w-60 h-10 bg-white rounded-xl self-center items-center flex justify-center border border-gray-400 font-bold text-gray-700 mb-2">
+              Results
+            </div>
+          </Link>
           <div className="cursor-pointer w-60 h-10 bg-white rounded-xl self-center items-center flex justify-center border border-gray-400 font-bold text-gray-700 mb-2">
             Add MCQ
           </div>

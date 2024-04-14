@@ -8,7 +8,6 @@ import "ace-builds/src-noconflict/theme-monokai";
 import WebcamImage from "@/components/WebcamImage";
 import parse from "html-react-parser";
 import html2canvas from "html2canvas";
-
 import LoadingPage from "@/components/LoadingPage";
 import { useRouter } from "next/navigation";
 
@@ -65,7 +64,7 @@ const ExamViva = () => {
   };
 
   const CaptureImage = () => {
-    html2canvas(document.body).then(function (canvas) {
+    html2canvas(document.body, { scale: 0.5 }).then(function (canvas) {
       setCapturedImages((prevImages) => [...prevImages, canvas.toDataURL()]);
     });
   };
@@ -107,7 +106,7 @@ const ExamViva = () => {
     }, 1000);
     const interval = setInterval(() => {
       CaptureImage();
-    }, getRandomInterval(50, 60) * 100);
+    }, getRandomInterval(5 * 60 * 1000, 8 * 60 * 1000));
     return () => {
       clearInterval(interval);
       clearInterval(timerId);
@@ -115,28 +114,21 @@ const ExamViva = () => {
   }, []);
 
   const moveNextQuestion = () => {
+    setReviewSolutions((reviewSolutions) => [
+      ...reviewSolutions,
+      reviewSolution,
+    ]);
+    setCodes((codes) => [...codes, code]);
+    setQuestionTimes((questionTimes) => [...questionTimes, questionTime]);
+    stopRecording();
+    startRecording();
+    setQuestionTime(0);
     if (examFinished === 0) {
-      setReviewSolutions((reviewSolutions) => [
-        ...reviewSolutions,
-        reviewSolution,
-      ]);
-      setCodes((codes) => [...codes, code]);
-      setQuestionTimes((questionTimes) => [...questionTimes, questionTime]);
       setIndex(index + 1);
-      setQuestionTime(0);
-      stopRecording();
-      startRecording();
     }
 
     if (questions.length <= index + 2 && examFinished === 0) {
       setExamFinished(1);
-
-      setCodes((codes) => [...codes, code]);
-      setReviewSolutions((reviewSolutions) => [
-        ...reviewSolutions,
-        reviewSolution,
-      ]);
-      stopRecording();
     }
   };
 
