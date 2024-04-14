@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import dynamic from "next/dynamic"; // Import dynamic from Next.js
+import dynamic from "next/dynamic"; 
 import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 import BASE_URLS from "../../../../urlsConfig";

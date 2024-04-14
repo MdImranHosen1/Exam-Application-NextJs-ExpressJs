@@ -7,7 +7,7 @@ router.use(express.json());
 // POST route to save exam results
 router.post("/", async (req, res) => {
   try {
-    // Extract data from the request body
+ 
     const {
       questions,
       codes,
@@ -18,7 +18,6 @@ router.post("/", async (req, res) => {
       records,
     } = req.body;
 
-    // Create a new instance of the results model
     const result = new Result({
       questions,
       codes,
@@ -28,36 +27,34 @@ router.post("/", async (req, res) => {
       screenshot,
       records,
     });
-    // Save the data to the database
-    await result.save();
 
-    // Send a success response
+    await result.save();
     res.status(201).json({ message: "Exam results saved successfully" });
   } catch (error) {
-    // Handle errors
     console.error("Error saving exam results:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/:id", async (req, res) => {
+  const id = req.params.id
   try {
-    const examResults = await Result.find();
-    res.status(200).json(examResults);
+    const examResult = await Result.findById({_id:id})
+    res.status(200).json(examResult);
   } catch (error) {
     console.error("Error fetching exam results:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// router.get("/", async (req, res) => {
-//   try {
-//     const examResults = await Result.find({}, '_id totalTime'); 
-//     res.status(200).json(examResults);
-//   } catch (error) {
-//     console.error("Error fetching exam results:", error);
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });
 
+router.get("/", async (req, res) => {
+  try {
+    const examResults = await Result.find({}, '_id totalTime createdAt');
+    res.status(200).json(examResults);
+  } catch (error) {
+    console.error("Error fetching exam results:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 module.exports = router;
