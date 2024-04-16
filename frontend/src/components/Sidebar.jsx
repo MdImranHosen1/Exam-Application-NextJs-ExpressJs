@@ -17,6 +17,10 @@ const Sidebar = () => {
     if (value === "Home") {
       push("/");
     }
+    else if(value='Questions')
+    {
+      push('/questions');
+    }
   };
 
   useEffect(() => {
