@@ -1,5 +1,8 @@
 import Image from "next/image";
 import ExamSelectCard from "./../components/ExamSelectCard";
+const exam1=[];
+const exam1Question=[];
+
 
 export default function Home() {
   return (

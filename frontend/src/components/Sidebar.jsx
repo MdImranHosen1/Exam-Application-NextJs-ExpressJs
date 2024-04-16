@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import userIcon from "../../public/images/home.png";
 import Link from "next/link";
-const navItem = ["Home", "Questions", "MCQ", "Subjects"];
+const navItem = ["Home", "Questions", "Subjects"];
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 
@@ -51,9 +51,9 @@ const Sidebar = () => {
               Results
             </div>
           </Link>
-          <div className="cursor-pointer w-60 h-10 bg-white rounded-xl self-center items-center flex justify-center border border-gray-400 font-bold text-gray-700 mb-2">
+          {/* <div className="cursor-pointer w-60 h-10 bg-white rounded-xl self-center items-center flex justify-center border border-gray-400 font-bold text-gray-700 mb-2">
             Add MCQ
-          </div>
+          </div> */}
 
           <Link href="/add-question/viva">
             <div className="cursor-pointer w-60 h-10 bg-white rounded-xl self-center items-center flex justify-center border border-gray-400 font-bold text-gray-700 mb-2">

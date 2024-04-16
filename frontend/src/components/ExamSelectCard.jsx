@@ -2,6 +2,7 @@
 import React from "react";
 import Link from "next/link";
 
+
 const ExamSelectCard = () => {
   return (
     <div className="flex flex-grow mt-10 h-[600px] rounded-xl roundet-2xl bg-gray-200 ml-5 mr-5 pb-2  ">
@@ -13,7 +14,7 @@ const ExamSelectCard = () => {
 
           <div className=" ml-2 bg-white  m-4  p-2 rounded-lg font-semibold flex flex-grow justify-between">
             <div>Subject: </div>
-            <div>Number</div>
+            <div>Number:</div>
           </div>
         </div>
         <div>

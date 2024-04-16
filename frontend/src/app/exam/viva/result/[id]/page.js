@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-
+import Link from 'next/link';
 import parse from "html-react-parser";
 import axios from "axios";
 import BASE_URLS from "../../../../../../urlsConfig";
@@ -31,7 +31,7 @@ const VivaExamResultView = ({ params }) => {
     };
 
     const getQuestionsData = async () => {
-        
+
         try {
             if (results) {
                 const promises = results.questions.map(async (value) => {
@@ -104,7 +104,7 @@ const VivaExamResultView = ({ params }) => {
                     results.codes.map((value, index) => {
                         return (
                             <div className="m-2 bg-[#85CDCA] p-2 mb-5 border-[3px] border-green-500 rounded-lg" key={index}>
-                                <div className="flex text-[25px] font-bold mb-2">
+                                <div className=" text-[25px] font-bold mb-2">
                                     Question {index + 1}: {parse(questionsData[index][0].question)}
                                 </div>
                                 <div className="flex flex-grow justify-between text-[18px] font-semibold mb-1">
@@ -125,33 +125,60 @@ const VivaExamResultView = ({ params }) => {
                                         </audio>
                                     )}
                                 </div>
+                                <Link href={`/questions/` + questionsData[index][0]._id}>
+                                    <div className=' cursor-pointer w-36 justify-center h-10 bg-white rounded-xl self-center items-center flex  border border-green-600 font-bold text-gray-700 mt-2'>
+                                        Edit Question
+                                    </div>
+                                </Link>
                                 <div className="flex flex-col flex-grow">
                                     <div className="bg-white border p-2 rounded-lg text-[19px] m-2">
                                         {parse(questionsData[index][0].solution)}
                                     </div>
-                                    <div>
-                                        <div className="font-bold text-[20px]">Your Code:</div>
-                                        <AceEditor
-                                            mode="c_cpp"
-                                            theme="monokai"
-                                            onChange={handleCodeWritten}
-                                            name="UNIQUE_ID_OF_DIV"
-                                            editorProps={{ $blockScrolling: true }}
-                                            width="100%"
-                                            fontSize={18}
-                                            showPrintMargin={true}
-                                            showGutter={true}
-                                            highlightActiveLine={true}
-                                            value={code === null ? results.codes[index] : code}
-                                            setOptions={{
-                                                enableBasicAutocompletion: false,
-                                                enableLiveAutocompletion: false,
-                                                enableSnippets: false,
-                                                showLineNumbers: true,
-                                                tabSize: 2,
-                                                maxLines: Infinity
-                                            }}
-                                        />
+                                    <div className='flex flex-grow w-full'>
+                                        <div className="flex flex-col flex-grow"><div className="font-bold text-[20px]">Your Code:</div>
+                                            <AceEditor
+                                                mode="c_cpp"
+                                                theme="monokai"
+                                                onChange={handleCodeWritten}
+                                                name="UNIQUE_ID_OF_DIV"
+                                                editorProps={{ $blockScrolling: true }}
+                                                width="100%"
+                                                fontSize={18}
+                                                showPrintMargin={true}
+                                                showGutter={true}
+                                                highlightActiveLine={true}
+                                                value={code === null ? results.codes[index] : code}
+                                                setOptions={{
+                                                    enableBasicAutocompletion: false,
+                                                    enableLiveAutocompletion: false,
+                                                    enableSnippets: false,
+                                                    showLineNumbers: true,
+                                                    tabSize: 2,
+                                                    maxLines: Infinity
+                                                }}
+                                            /></div>
+
+                                        <div className="flex flex-col flex-grow"><div className="font-bold text-[20px]">Solution Code:</div>
+                                            <AceEditor
+                                                mode="c_cpp"
+                                                theme="monokai"
+                                                name="UNIQUE_ID_OF_DIV"
+                                                editorProps={{ $blockScrolling: true }}
+                                                width="100%"
+                                                fontSize={18}
+                                                showPrintMargin={true}
+                                                showGutter={true}   
+                                                highlightActiveLine={true}
+                                                value={questionsData[index][0].code}
+                                                setOptions={{
+                                                    enableBasicAutocompletion: false,
+                                                    enableLiveAutocompletion: false,
+                                                    enableSnippets: false,
+                                                    showLineNumbers: true,
+                                                    tabSize: 2,
+                                                    maxLines: Infinity
+                                                }}
+                                            /></div>
                                     </div>
                                 </div>
                             </div>
