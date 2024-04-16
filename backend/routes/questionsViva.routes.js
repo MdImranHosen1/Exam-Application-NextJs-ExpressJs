@@ -30,6 +30,20 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.get("/subject/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const data = await questionsViva.find({ subjectName: id });
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(404).json({
+      Error: "Error Occurred While Getting Questions",
+      error,
+    });
+  }
+});
+
+
 router.post("/", async (req, res) => {
   try {
     const data = new questionsViva(req.body);

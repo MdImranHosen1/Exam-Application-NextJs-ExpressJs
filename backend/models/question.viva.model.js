@@ -9,6 +9,10 @@ const QuestionVivaSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    code: {
+        type: String,
+        required: false,
+    },
     subjectName: {
         type: String,
         required: true,
