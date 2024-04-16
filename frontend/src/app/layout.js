@@ -1,6 +1,10 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
+import "@fontsource/atkinson-hyperlegible"; // Defaults to weight 400
+import "@fontsource/atkinson-hyperlegible/400.css"; // Specify weight
+import "@fontsource/atkinson-hyperlegible/400-italic.css"; // Specify weight and style
+
 
 import BASE_URLS from "../../urlsConfig";
 const inter = Inter({ subsets: ["latin"] });

@@ -17,6 +17,8 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
+// get a single question by the id
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   try {
@@ -30,6 +32,27 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// Update the single question by id
+router.put("/:id", async (req, res) => {
+  const id = req.params.id;
+  const { question, solution, code, subjectName } = req.body; // Assuming these fields are sent in the request body
+
+  try {
+    await questionsViva.findOneAndUpdate(
+      { _id: id },
+      { $set: { question, solution, code, subjectName } }
+    );
+
+    res.status(200).json({ message: "Question updated successfully" });
+  } catch (error) {
+    res.status(500).json({
+      Error: "Error Occurred While Updating Question",
+      error,
+    });
+  }
+});
+
+// simillar subject all question get by the subject id
 router.get("/subject/:id", async (req, res) => {
   const id = req.params.id;
   try {

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fontsource/atkinson-hyperlegible": "^5.0.19",
     "ace-builds": "^1.32.9",
     "axios": "^1.6.8",
     "html-react-parser": "^5.1.10",
