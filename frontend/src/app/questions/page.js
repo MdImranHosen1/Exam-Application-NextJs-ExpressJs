@@ -46,7 +46,7 @@ const Questions = () => {
         <div className="ml-[300px]">
             <div className="font-bold  h-20 justify-center text-[22px] bg-gray-200 flex items-center ">
                 {subjectList.map((value, index) => {
-                    return (<div key={index} className='ml-1 mr-1  bg-white pl-2 pr-2 pt-1 pd-1 rounded-xl border cursor-pointer text-gray-700' onClick={() => getQuestion(value._id)}> {value.name}</div>)
+                    return (<div key={index} className={`${questions != null && questions[0]._id === value._id ? " bg-green-300" : "bg-white "}cursor-pointer pl-2 pr-2 pt-1 pd-1 ml-1 mr-1  rounded-xl self-center items-center flex  border border-gray-400 font-bold text-gray-700`} onClick={() => getQuestion(value._id)}> {value.name}</div>)
                 })}
             </div>
 
@@ -55,8 +55,13 @@ const Questions = () => {
                     {questions.map((value, index) => {
                         return (
                             <div className="m-2 bg-[#85CDCA] p-2 mb-5 border-[3px] border-green-500 rounded-lg" key={index}>
-                                <div className="flex text-[25px] font-bold mb-2">
-                                    Question {index + 1}: {parse(value.question)}
+                                <div>
+                                    <div className="flex text-[25px] font-bold mb-2">
+                                        Question {index + 1}: {parse(value.question)}
+                                    </div>
+                                    <div className=' cursor-pointer w-36 justify-center h-10 bg-white rounded-xl self-center items-center flex  border border-green-600 font-bold text-gray-700'>
+                                        Edit
+                                    </div>
                                 </div>
                                 <div className="flex flex-col flex-grow">
                                     <div className="bg-white border p-2 rounded-lg text-[19px] m-2">
