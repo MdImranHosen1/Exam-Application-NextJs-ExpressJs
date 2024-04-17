@@ -56,12 +56,12 @@ const ExamViva = () => {
     }
   };
 
-  const playRecording = (index) => {
-    const blob = new Blob([audioChunks[index]], { type: "audio/wav" });
-    const url = URL.createObjectURL(blob);
-    const audio = new Audio(url);
-    audio.play();
-  };
+  // const playRecording = (index) => {
+  //   const blob = new Blob([audioChunks[index]], { type: "audio/wav" });
+  //   const url = URL.createObjectURL(blob);
+  //   const audio = new Audio(url);
+  //   audio.play();
+  // };
 
   const CaptureImage = () => {
     html2canvas(document.body, { scale: 0.5 }).then(function (canvas) {
@@ -76,7 +76,7 @@ const ExamViva = () => {
   useEffect(() => {
     const getQuestionsList = async () => {
       try {
-        const response = await axios.get(BASE_URLS.backend + "/exam/viva");
+        const response = await axios.get(BASE_URLS.backend + "/exam/viva/" + BASE_URLS.questionNumber);
         const questionsList = response.data;
         const arrangedQuestions = [
           ...questionsList.HR.filter(

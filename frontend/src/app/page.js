@@ -1,7 +1,6 @@
 import Image from "next/image";
 import ExamSelectCard from "./../components/ExamSelectCard";
-const exam1=[];
-const exam1Question=[];
+
 
 
 export default function Home() {
@@ -12,10 +11,10 @@ export default function Home() {
           Viva Information
         </div>
         <div className="flex flex-grow">
-          <ExamSelectCard />
-          <ExamSelectCard />
-          <ExamSelectCard />
-          <ExamSelectCard />
+          <ExamSelectCard quetionNum={2} />
+          <ExamSelectCard quetionNum={3} />
+          <ExamSelectCard quetionNum={4} />
+          <ExamSelectCard quetionNum={5} />
         </div>
       </div>
     </main>

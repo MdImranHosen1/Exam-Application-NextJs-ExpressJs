@@ -7,7 +7,8 @@ const Subjects = require("../models/subject.model");
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
 
-router.get("/", async (req, res) => {
+router.get("/:id", async (req, res) => {
+  const id = req.params.id;
   try {
     const subjectsQuestions = {};
     const subjects = await Subjects.find();
@@ -20,9 +21,20 @@ router.get("/", async (req, res) => {
       );
       const selectedQuestions = shuffledQuestions.slice(
         0,
-        Math.min(3, shuffledQuestions.length)
+        Math.min(subject.name === 'Programming'?1:id, shuffledQuestions.length)
       );
-      subjectsQuestions[subject.name] = selectedQuestions;
+      subjectsQuestions[subject.name] = [];
+      if (subject.name === 'HR') {
+        for (const qs of selectedQuestions) {
+          if (qs._id != '6615a7d23e2adfb29dff966d') {
+            subjectsQuestions[subject.name].push(qs);
+          }
+        }
+      }
+      else {
+        subjectsQuestions[subject.name] = selectedQuestions;
+      }
+
     }
 
     const additionalQuestions = await questionsViva.find({
@@ -30,6 +42,7 @@ router.get("/", async (req, res) => {
     });
 
     subjectsQuestions["HR"].push(additionalQuestions[0]);
+
 
     res.json(subjectsQuestions);
   } catch (error) {
