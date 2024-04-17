@@ -5,6 +5,9 @@ import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 import BASE_URLS from "../../../../urlsConfig";
 import { useRouter } from "next/navigation";
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-c_cpp";
+import "ace-builds/src-noconflict/theme-monokai";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -21,6 +24,7 @@ const toolbarOptions = [
 const AddVivaQuestion = () => {
   const [question, setQuestion] = useState("");
   const [solution, setSolution] = useState("");
+  const [code, setCode] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   // const [selectedSubject, setSelectedSubject] = useState('6615118fc3079a21bfc98929');
   const [subjectList, setSubjectList] = useState("");
@@ -28,6 +32,9 @@ const AddVivaQuestion = () => {
 
   const handleQuestionChange = (html) => {
     setQuestion(html);
+  };
+  const handleCodeWritten = (newCode) => {
+    setCode(newCode); // Set code as a string
   };
 
   const handleSolutionChange = (html) => {
@@ -49,9 +56,10 @@ const AddVivaQuestion = () => {
 
   const handleSubmit = async () => {
     const data = {
-      question: question,
-      solution: solution,
-      subjectName: selectedSubject,
+        question: question,
+        solution: solution,
+        code: code,
+        subjectName: selectedSubject,
     };
     try {
       const response = await axios.post(
@@ -91,6 +99,28 @@ const AddVivaQuestion = () => {
           onChange={handleSolutionChange}
           modules={{ toolbar: toolbarOptions }}
         />
+        <div className=" font-semibold mt-3">Code:</div>
+        <AceEditor
+          mode="c_cpp"
+          theme="monokai"
+          onChange={handleCodeWritten}
+          name="UNIQUE_ID_OF_DIV"
+          editorProps={{ $blockScrolling: true }}
+          width="100%"
+          height="600px"
+          fontSize={16}
+          showPrintMargin={true}
+          showGutter={true}
+          highlightActiveLine={true}
+          value={code}
+          setOptions={{
+            enableBasicAutocompletion: false,
+            enableLiveAutocompletion: false,
+            enableSnippets: false,
+            showLineNumbers: true,
+            tabSize: 2,
+          }}
+        />
 
         <form className="w-full mt-3 ">
           <label
@@ -113,6 +143,7 @@ const AddVivaQuestion = () => {
               ))}
           </select>
         </form>
+        
 
         <div className=" mt-10 w-full justify-center flex ">
           <div
