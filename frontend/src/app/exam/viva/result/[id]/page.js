@@ -59,7 +59,7 @@ const VivaExamResultView = ({ params }) => {
         try {
             console.log(params.id);
             const response = await axios.get(
-                BASE_URLS.backend + `/exam/viva/result/${params.id}`
+                BASE_URLS.backend + `/exam/result/viva/${params.id}`
             );
             const resultsData = response.data;
             setResults(resultsData);

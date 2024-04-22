@@ -11,7 +11,7 @@ const VivaExamView = () => {
 
   const getResults = async () => {
     try {
-      const response = await axios.get(BASE_URLS.backend + "/exam/viva/result");
+      const response = await axios.get(BASE_URLS.backend + "/exam/result/viva");
       const resultsData = response.data;
 
       setResults(resultsData);

@@ -20,8 +20,9 @@ app.use(cors());
 
 app.use("/subjects/", subjectRoutes);
 app.use("/questions/viva/", questionsVivaRoutes);
+app.use("/exam/result/viva", vivaResults);
 app.use("/exam/viva/", examVivaRoutes);
-app.use("/exam/viva/result", vivaResults);
+
 // app.use("/profile/", profileRoutes);
 
 app.get("/", (req, res) => {
