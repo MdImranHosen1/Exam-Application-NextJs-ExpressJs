@@ -3,11 +3,17 @@ import LoadingPage from '@/components/LoadingPage';
 import React, { useEffect, useState } from 'react'
 import BASE_URLS from "../../../urlsConfig";
 import axios from "axios";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
 import parse from "html-react-parser";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/theme-monokai";
 import Link from 'next/link';
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+const toolbarOptions = [
+
+];
 
 const Questions = () => {
 
@@ -43,9 +49,6 @@ const Questions = () => {
     }
 
 
-
-
-
     return (
         <div className="ml-[300px]">
             <div className="font-bold  h-20 justify-center text-[19px] bg-gray-200 flex items-center ">
@@ -56,12 +59,11 @@ const Questions = () => {
 
             {questions === null ? <LoadingPage /> :
                 <div className="">
-                    {console.log(questions)}
                     {questions.map((value, index) => {
                         return (
                             <div className="m-2 bg-[#85CDCA] p-2 mb-5 border-[3px] border-green-500 rounded-lg" key={index}>
                                 <div>
-                                    <div className="text-[25px] font-bold mb-2">
+                                    <div className="text-[18px] font-bold mb-2">
                                         Question {index + 1}: {parse(value.question)}
                                     </div>
                                     <Link href={`/questions/` + value._id}>
@@ -71,9 +73,16 @@ const Questions = () => {
                                     </Link>
                                 </div>
                                 <div className="flex flex-col flex-grow">
-                                    <div className="bg-white border p-2 rounded-lg text-[19px] m-2">
+                                    {/* <div className="bg-white border p-2 rounded-lg text-[19px] m-2">
                                         {parse(value.solution)}
-                                    </div>
+                                    </div> */}
+
+                                    <ReactQuill
+                                        theme="snow"
+                                        className=" bg-gray-100"
+                                        value={value.solution}
+                                        modules={{ toolbar: toolbarOptions }}
+                                    />
                                     <div>
                                         <div className="font-bold text-[20px]">Your Code:</div>
                                         <AceEditor
