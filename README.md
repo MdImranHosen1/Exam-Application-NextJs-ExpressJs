@@ -2,7 +2,7 @@
 
 ## Description
 
-This application is designed to help you prepare for viva exams effectively. It allows you to set a large number of questions, organized by topic. Each day, you can simulate a viva by facing questions selected from the topics you've chosen. 
+This application is designed to help you prepare for viva exams effectively. It allows you to set a large number of questions, organized by topic. Each day, you can simulate a viva by facing questions selected from the topics you've chosen.
 
 One unique feature of the app is the audio option, which records your responses during the test. After completing the viva simulation, you can listen to these recordings to assess your performance and identify areas for improvement.
 
@@ -11,6 +11,7 @@ This tool is perfect for systematic and thorough viva preparation, enabling you 
 ## Prerequisites
 
 Before you start, ensure you have met the following requirements:
+
 - [Node.js](https://nodejs.org/) (v14 or higher)
 - [npm](https://www.npmjs.com/) (comes with Node.js) or [Yarn](https://yarnpkg.com/)
 
@@ -106,6 +107,17 @@ For deploying the application, you might need to follow specific instructions ba
 
   Ensure your Express backend is configured to serve static files from `frontend/build`.
 
+## Screensort
+
+- Home
+  ![alt text](</Screensort/Screenshot from 2024-08-14 23-10-49.png>)
+- Question
+  ![alt text](</Screensort/Screenshot from 2024-08-14 23-15-48.png>)
+- Overview
+  ![alt text](</Screensort/Screenshot from 2024-08-14 23-16-23.png>)
+- Add Question
+  ![alt text](</Screensort/Screenshot from 2024-08-14 23-18-42.png>)
+
 ## Contributing
 
 If you want to contribute to this project, please follow these steps:
@@ -115,14 +127,3 @@ If you want to contribute to this project, please follow these steps:
 3. Commit your changes (`git commit -am 'Add some feature'`).
 4. Push to the branch (`git push origin feature/YourFeature`).
 5. Create a new Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgements
-
-- Any libraries or tools you used.
-- Inspiration or contributions from others.
-
----
