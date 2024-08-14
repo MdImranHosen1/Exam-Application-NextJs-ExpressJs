@@ -2,7 +2,11 @@
 
 ## Description
 
-Briefly describe what your application does and its key features.
+This application is designed to help you prepare for viva exams effectively. It allows you to set a large number of questions, organized by topic. Each day, you can simulate a viva by facing questions selected from the topics you've chosen. 
+
+One unique feature of the app is the audio option, which records your responses during the test. After completing the viva simulation, you can listen to these recordings to assess your performance and identify areas for improvement.
+
+This tool is perfect for systematic and thorough viva preparation, enabling you to review and refine your answers in a structured way.
 
 ## Prerequisites
 
