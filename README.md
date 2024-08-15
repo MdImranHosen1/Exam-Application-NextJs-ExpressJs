@@ -17,62 +17,36 @@ Before you start, ensure you have met the following requirements:
 
 ## Installation
 
-1. **Clone the Repository**
+1.  **Clone the Repository**
 
-   ```bash
-   git clone https://github.com/MdImranHosen1/Exam-Application-NextJs-ExpressJs
-   cd Exam-Application-NextJs-ExpressJs
-   ```
+    ```bash
+    git clone https://github.com/MdImranHosen1/Exam-Application-NextJs-ExpressJs
+    cd Exam-Application-NextJs-ExpressJs
+    ```
 
-2. **Install Dependencies**
+2.  **Install and Start Dependencies**
 
-   - For the backend (Express.js):
+    - For the backend (Express.js):
 
-     ```bash
-     cd backend
-     npm install
-     ```
+      ```bash
+      cd backend
+      npm install
+      npm start
+      ```
 
-   - For the frontend (React.js):
+      The backend will start and listen on `http://localhost:5000` (or any port specified in your configuration).
 
-     ```bash
-     cd ../frontend
-     npm install
-     ```
+    - For the frontend (React.js):
 
-## Running the Application
+      ```bash
+      cd ../frontend
+      rm -rf .next
+      npm run build
+      npm start
 
-1. **Start the backend**
+      ```
 
-   - Navigate to the backend directory:
-
-     ```bash
-     cd backend
-     ```
-
-   - Start the backend:
-
-     ```bash
-     npm start
-     ```
-
-   The backend will start and listen on `http://localhost:5000` (or any port specified in your configuration).
-
-2. **Start the frontend**
-
-   - Open a new terminal window/tab and navigate to the frontend directory:
-
-     ```bash
-     cd frontend
-     ```
-
-   - Start the frontend:
-
-     ```bash
-     npm start
-     ```
-
-   The frontend will start and open in your default web browser at `http://localhost:3000`.
+      The frontend will start and open in your default web browser at `http://localhost:3000`.
 
 ## Testing
 
@@ -117,6 +91,8 @@ For deploying the application, you might need to follow specific instructions ba
   ![alt text](</Screensort/Screenshot from 2024-08-14 23-16-23.png>)
 - Add Question
   ![alt text](</Screensort/Screenshot from 2024-08-14 23-18-42.png>)
+- Viva
+  ![alt text](</Screensort/Screenshot from 2024-08-15 18-35-33.png>)
 
 ## Contributing
 

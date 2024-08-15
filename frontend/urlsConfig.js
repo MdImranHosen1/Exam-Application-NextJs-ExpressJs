@@ -1,6 +1,5 @@
 const BASE_URLS = {
-    backend: 'http://localhost:5000',
-    questionNumber:2,
+  backend: "http://localhost:5000",
 };
 
 export default BASE_URLS;

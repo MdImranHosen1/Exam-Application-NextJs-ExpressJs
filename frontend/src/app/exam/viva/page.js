@@ -74,23 +74,49 @@ const ExamViva = () => {
   };
 
   useEffect(() => {
+    console.log(" page is active 1");
     const getQuestionsList = async () => {
       try {
-        const response = await axios.get(BASE_URLS.backend + "/exam/viva/" + BASE_URLS.questionNumber);
+        let questionNumber = 10;
+        let url = BASE_URLS.backend + "/exam/viva/" + questionNumber;
+        const response = await axios.get(url);
+        console.log("data: ", url, response.data);
         const questionsList = response.data;
+
+        // Check if questionsList is in the expected format
+        if (typeof questionsList !== "object" || questionsList === null) {
+          console.error("Unexpected response format");
+          return;
+        }
+
         const arrangedQuestions = [
-          ...questionsList.HR.filter(
-            (question) => question._id === "6615a7d23e2adfb29dff966d"
-          ),
-          ...questionsList["Data Structure & Algorithm"],
-          ...questionsList.OOP,
-          ...questionsList.Database,
-          ...questionsList.SQL,
-          ...questionsList.Programming,
-          ...questionsList.HR.filter(
-            (question) => question._id !== "6615a7d23e2adfb29dff966d"
-          ),
+          ...(Array.isArray(questionsList.HR)
+            ? questionsList.HR.filter(
+                (question) => question._id === "6615a7d23e2adfb29dff966d"
+              )
+            : []),
+          ...(Array.isArray(questionsList["Data Structure & Algorithm"])
+            ? questionsList["Data Structure & Algorithm"]
+            : []),
+          ...(Array.isArray(questionsList.OOP) ? questionsList.OOP : []),
+          ...(Array.isArray(questionsList.Database)
+            ? questionsList.Database
+            : []),
+          ...(Array.isArray(questionsList.SQL) ? questionsList.SQL : []),
+          ...(Array.isArray(questionsList.Programming)
+            ? questionsList.Programming
+            : []),
+          ...(Array.isArray(questionsList.HR)
+            ? questionsList.HR.filter(
+                (question) => question._id !== "6615a7d23e2adfb29dff966d"
+              )
+            : []),
         ];
+
+        if (arrangedQuestions.length === 0) {
+          console.error("No valid questions found in the response");
+          return;
+        }
 
         setQuestions(arrangedQuestions);
       } catch (error) {
@@ -172,18 +198,18 @@ const ExamViva = () => {
 
     console.log("ExamDATA ", examData);
 
-    // function calculateSizeInBytes(data) {
-    //   // Convert the data to JSON string
-    //   const jsonString = JSON.stringify(data);
+    //   // function calculateSizeInBytes(data) {
+    //   //   // Convert the data to JSON string
+    //   //   const jsonString = JSON.stringify(data);
 
-    //   // Calculate the size of the JSON string in bytes
-    //   const bytes = new Blob([jsonString]).size;
+    //   //   // Calculate the size of the JSON string in bytes
+    //   //   const bytes = new Blob([jsonString]).size;
 
-    //   return bytes;
-    // }
+    //   //   return bytes;
+    //   // }
 
-    // const sizeInBytes = calculateSizeInBytes(examData);
-    // console.log("Size of ExamData:", sizeInBytes, "bytes");
+    //   // const sizeInBytes = calculateSizeInBytes(examData);
+    //   // console.log("Size of ExamData:", sizeInBytes, "bytes");
 
     axios
       .post(BASE_URLS.backend + "/exam/viva/result", examData)
@@ -198,6 +224,7 @@ const ExamViva = () => {
   };
 
   if (questions === null) {
+    console.log("first loading page");
     return <LoadingPage />;
   }
 
